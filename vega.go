@@ -3,7 +3,7 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
-	"log"
+	"time"
 )
 
 const vegaSchema = "https://vega.github.io/schema/vega-lite/v5.json"
@@ -18,12 +18,19 @@ type mark struct {
 	Tooltip bool   `json:"tooltip,omitempty"`
 }
 
+type Sort struct {
+	Field
+	Op    string `json:"op,omitempty"`
+	Order string `json:"order,omitempty"`
+}
+
 type Field struct {
 	Field     string `json:"field,omitempty"`
 	Type      string `json:"type,omitempty"`
-	Sort      string `json:"sort,omitempty"`
+	Sort      any    `json:"sort,omitempty"`
 	TimeUnit  string `json:"timeUnit,omitempty"`
 	Aggregate string `json:"aggregate,omitempty"`
+	Title     string `json:"title,omitempty"`
 }
 
 type theta struct {
@@ -34,11 +41,11 @@ type color struct {
 	Field
 }
 type encoding struct {
-	Theta theta `json:"theta,omitempty"`
-	Color color `json:"color,omitempty"`
-	Order Field `json:"order,omitempty"`
-	X     x     `json:"x,omitempty"`
-	Y     y     `json:"y,omitempty"`
+	Theta *theta `json:"theta,omitempty"` // making it a pointer to avoid empty struct
+	Color *color `json:"color,omitempty"`
+	Order *Field `json:"order,omitempty"`
+	X     *x     `json:"x,omitempty"`
+	Y     *y     `json:"y,omitempty"`
 }
 
 type x struct {
@@ -51,6 +58,8 @@ type y struct {
 
 type vega struct {
 	Schema   string   `json:"$schema"`
+	Height   int      `json:"height,omitempty"`
+	Width    int      `json:"width,omitempty"`
 	Data     data     `json:"data,omitempty"`
 	Mark     mark     `json:"mark,omitempty"`
 	Encoding encoding `json:"encoding,omitempty"`
@@ -76,9 +85,9 @@ func createPieChart(row *sql.Row) ([]byte, error) {
 			Tooltip: true,
 		},
 		Encoding: encoding{
-			Theta: theta{Field: Field{Field: "value", Type: "quantitative"}, Stack: "normalize"},
-			Color: color{Field{Field: "Operating System", Type: "nominal"}},
-			Order: Field{Field: "value", Type: "quantitative", Sort: "descending"},
+			Theta: &theta{Field: Field{Field: "value", Type: "quantitative"}, Stack: "normalize"},
+			Color: &color{Field{Field: "Operating System", Type: "nominal"}},
+			Order: &Field{Field: "value", Type: "quantitative", Sort: "descending"},
 		},
 	}
 
@@ -96,52 +105,78 @@ func createPieChart(row *sql.Row) ([]byte, error) {
 	return jsonString, nil
 }
 
-//{
-//  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-//  "description": "Stock prices of 5 Tech Companies over Time.",
-//  "data": {"url": "data/stocks.csv"},
-//  "mark": {"type": "line", "tooltip": true, "point": true},
-//  "encoding": {
-//    "x": {"timeUnit": "year", "field": "date"},
-//    "y": {"aggregate": "mean", "field": "price", "type": "quantitative"},
-//    "color": {"field": "symbol", "type": "nominal"}
-//  }
-//}
-
 func createLineGraph(rows *sql.Rows) ([]byte, error) {
+	v := vega{
+		Schema: vegaSchema,
+		Height: 500,
+		Width:  1000,
+		Mark: mark{
+			Type:    "line",
+			Tooltip: true,
+			Point:   true,
+		},
+		Encoding: encoding{
+			X: &x{
+				Field{
+					Field: "d", Type: "temporal", Title: "Date", TimeUnit: "yearmonthdate",
+				},
+			},
+			Y: &y{
+				Field{
+					Field: "n", Type: "quantitative", Title: "Number of Instances",
+				},
+			}, Color: &color{
+				Field{
+					Field: "v", Type: "nominal", Title: "Version", Sort: Sort{
+						Field: Field{
+							Field: "n",
+						},
+						Op:    "sum",
+						Order: "descending",
+					},
+				},
+			},
+		},
+	}
 	var (
+		dateTimeStr   string
 		summaryString string
 		s             summary
 	)
-	//v := vega{
-	//	Schema: vegaSchema,
-	//	Mark: mark{
-	//		Type:    "line",
-	//		Tooltip: true,
-	//		Point:   true,
-	//	},
-	//	Encoding: encoding{X: x{Field{Field: "Date", TimeUnit: "year", Type: "temporal"}},
-	//		Y: y{Field{Field: "Number of Instances", Type: "quantitative"}}},
-	//}
 	for rows.Next() {
-
-		err := rows.Scan(&summaryString)
+		err := rows.Scan(&dateTimeStr, &summaryString)
 		if err != nil {
-			log.Fatal(err)
+			return nil, err
+		}
+		t, err := time.Parse(time.RFC3339, dateTimeStr)
+		if err != nil {
+			return nil, err
 		}
 		if summaryString == "{}" {
 			continue
 		}
 		err = json.Unmarshal([]byte(summaryString), &s)
 		if err != nil {
-			log.Fatal(err)
+			return nil, err
 		}
-
-		//for name, number := range s.Versions {
-		//	v.Data.Values = append(v.Data.Values, map[string]any{
-		//		"Date":
-		//	})
-		//}
+		all := 0
+		for version, number := range s.Versions {
+			v.Data.Values = append(v.Data.Values, map[string]any{
+				"v": version,
+				"n": number,
+				"d": t.Format("2006-01-02"),
+			})
+			all += int(number)
+		}
+		v.Data.Values = append(v.Data.Values, map[string]any{
+			"v": "all",
+			"n": all,
+			"d": t.Format("2006-01-02"),
+		})
 	}
-	return nil, nil
+	jsonString, err := json.Marshal(v)
+	if err != nil {
+		return nil, err
+	}
+	return jsonString, nil
 }

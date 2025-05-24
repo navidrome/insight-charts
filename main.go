@@ -30,9 +30,14 @@ func main() {
 	}
 	defer db.Close()
 
-	jsonString, err := createPieChart(db.QueryRow(`select data from summary order by time desc limit 1`))
+	//jsonString, err := createPieChart(db.QueryRow(`select data from summary order by time desc limit 1`))
 
-	//jsonString, err := createLineGraph()
+	q, err := db.Query(`select time, data from summary where data not like '{}'`)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	jsonString, err := createLineGraph(q)
 
 	if err != nil {
 		log.Fatal(err)
