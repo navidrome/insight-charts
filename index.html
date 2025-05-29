@@ -7,24 +7,27 @@
     <script src="https://cdn.jsdelivr.net/npm/vega@5.30.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.21.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.26.0"></script>
-    
+
     <style media="screen">
       .vega-actions a {
         margin-right: 5px;
       }
-    </style> 
+    </style>
   </head>
   <body>
     <h1>Navidrome insights</h1>
-    <div id="vis"></div>
+    <div id="vis1"></div>
+    <div id="vis2"></div>
+    <div id="vis3"></div>
 
     <script type="module">
-      import pie from './data/pie.json';
-      import numIns from './data/numInstance.json';
+      import osPie from "./data/osPie.json";
+      import numIns from "./data/numInstance.json";
+      import fsPie from "./data/fsPie.json";
 
-      // vegaEmbed('#vis', pie)
-      vegaEmbed('#vis', numIns)
-
+      vegaEmbed("#vis1", numIns);
+      vegaEmbed("#vis2", osPie);
+      vegaEmbed("#vis3", fsPie);
     </script>
   </body>
 </html>
