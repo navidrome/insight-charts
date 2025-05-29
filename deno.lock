@@ -1,0 +1,16 @@
+{
+  "version": "5",
+  "specifiers": {
+    "npm:sqlite@^5.1.1": "5.1.1"
+  },
+  "npm": {
+    "sqlite@5.1.1": {
+      "integrity": "sha512-oBkezXa2hnkfuJwUo44Hl9hS3er+YFtueifoajrgidvqsJRQFpc5fKoAkAor1O5ZnLoa28GBScfHXs8j0K358Q=="
+    }
+  },
+  "workspace": {
+    "dependencies": [
+      "npm:sqlite@^5.1.1"
+    ]
+  }
+}

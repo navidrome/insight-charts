@@ -1,0 +1,12 @@
+{
+  "tasks": {
+    "dev": "deno run -RW --watch main.ts"
+  },
+  "imports": {
+    "sqlite": "npm:sqlite@^5.1.1"
+  },
+  "fmt": {
+    "semiColons": false,
+    "singleQuote": true
+  }
+}

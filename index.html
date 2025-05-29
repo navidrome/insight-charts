@@ -1,33 +1,30 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
-    <title>Vega-Lite Bar Chart</title>
+    <title>Navidrome insights</title>
     <meta charset="utf-8" />
 
     <script src="https://cdn.jsdelivr.net/npm/vega@5.30.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.21.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.26.0"></script>
-
+    
     <style media="screen">
-      /* Add space between Vega-Embed links  */
       .vega-actions a {
         margin-right: 5px;
       }
-    </style>
+    </style> 
   </head>
   <body>
     <h1>Navidrome insights</h1>
-    <!-- Container for the visualization -->
     <div id="vis"></div>
 
     <script type="module">
-      fetch('./data.json')
-        .then((response) => response.json())
-        .then((data) => {
-          // Assign the specification to a local variable vlSpec.
-          // Embed the visualization in the container with id `vis`
-          vegaEmbed('#vis', data)
-        })
+      import pie from './data/pie.json';
+      import numIns from './data/numInstance.json';
+
+      // vegaEmbed('#vis', pie)
+      vegaEmbed('#vis', numIns)
+
     </script>
   </body>
 </html>
