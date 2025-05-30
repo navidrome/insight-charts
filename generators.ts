@@ -109,7 +109,7 @@ const numInstanceLine = (db: DatabaseSync): string => {
   })
 }
 
-const fsPie = (db: DatabaseSync): string => {
+const musicFsPie = (db: DatabaseSync): string => {
   const summary: Summary = JSON.parse(
     ((row) =>
       row && row['data'] instanceof Uint8Array
@@ -146,7 +146,7 @@ const fsPie = (db: DatabaseSync): string => {
             field: 'c',
             order: 'descending',
           },
-          title: 'File System',
+          title: 'File System (music)',
         },
         order: {
           field: 'c',
@@ -159,4 +159,104 @@ const fsPie = (db: DatabaseSync): string => {
   )
 }
 
-export { fsPie, numInstanceLine, osPie }
+const dataFsPie = (db: DatabaseSync): string => {
+  const summary: Summary = JSON.parse(
+    ((row) =>
+      row && row['data'] instanceof Uint8Array
+        ? new TextDecoder().decode(row['data'])
+        : '')(
+        db.prepare('select data from summary order by time desc').get(),
+      ),
+  )
+  const values = Object.entries(summary.dataFS ?? {}).map(
+    ([type, count]) => ({ fs: type, c: count }),
+  )
+
+  return JSON.stringify(
+    {
+      $schema: vegaSchema,
+      data: {
+        values: values,
+      },
+      mark: {
+        type: 'arc',
+        tooltip: true,
+      },
+      encoding: {
+        theta: {
+          field: 'c',
+          type: 'quantitative',
+          stack: 'normalize',
+          title: 'Percentage',
+        },
+        color: {
+          field: 'fs',
+          type: 'nominal',
+          sort: {
+            field: 'c',
+            order: 'descending',
+          },
+          title: 'File System (data)',
+        },
+        order: {
+          field: 'c',
+          type: 'quantitative',
+          sort: 'descending',
+          title: 'Count',
+        },
+      },
+    },
+  )
+}
+
+const playerTypePie = (db: DatabaseSync): string => {
+  const summary: Summary = JSON.parse(
+    ((row) =>
+      row && row['data'] instanceof Uint8Array
+        ? new TextDecoder().decode(row['data'])
+        : '')(
+        db.prepare('select data from summary order by time desc').get(),
+      ),
+  )
+  const values = Object.entries(summary.playerTypes ?? {}).map(
+    ([name, count]) => ({ pt: `${name}: ${count}`, c: count }),
+  )
+
+  return JSON.stringify(
+    {
+      $schema: vegaSchema,
+      data: {
+        values: values,
+      },
+      mark: {
+        type: 'arc',
+        tooltip: true,
+      },
+      encoding: {
+        theta: {
+          field: 'c',
+          type: 'quantitative',
+          stack: 'normalize',
+          title: 'Percentage',
+        },
+        color: {
+          field: 'pt',
+          type: 'nominal',
+          sort: {
+            field: 'c',
+            order: 'descending',
+          },
+          title: 'Client',
+        },
+        order: {
+          field: 'c',
+          type: 'quantitative',
+          sort: 'descending',
+          title: 'Count',
+        },
+      },
+    },
+  )
+}
+
+export { dataFsPie, musicFsPie, numInstanceLine, osPie, playerTypePie }

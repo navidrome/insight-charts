@@ -19,15 +19,21 @@
     <div id="vis1"></div>
     <div id="vis2"></div>
     <div id="vis3"></div>
+    <div id="vis4"></div>
+    <div id="vis5"></div>
 
     <script type="module">
       import osPie from "./data/osPie.json";
       import numIns from "./data/numInstance.json";
-      import fsPie from "./data/fsPie.json";
+      import musicFsPie from "./data/musicFsPie.json";
+      import dataFsPie from "./data/dataFsPie.json";
+      import playerTypePie from "./data/playerTypePie.json";
 
       vegaEmbed("#vis1", numIns);
       vegaEmbed("#vis2", osPie);
-      vegaEmbed("#vis3", fsPie);
+      vegaEmbed("#vis3", musicFsPie);
+      vegaEmbed("#vis4", dataFsPie);
+      vegaEmbed("#vis5", playerTypePie);
     </script>
   </body>
 </html>
