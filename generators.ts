@@ -18,6 +18,8 @@ const osPie = (db: DatabaseSync): string => {
   )
   return JSON.stringify({
     $schema: vegaSchema,
+    title: 'Operating Systems',
+    description: 'Distribution of operating systems used by clients',
     data: {
       values: values,
     },
@@ -73,6 +75,8 @@ const numInstanceLine = (db: DatabaseSync): string => {
   }
   return JSON.stringify({
     $schema: vegaSchema,
+    title: 'Number of Instances Over Time',
+    description: 'Number of instances of the server over time, by version',
     data: {
       values: values,
     },
@@ -125,6 +129,8 @@ const musicFsPie = (db: DatabaseSync): string => {
   return JSON.stringify(
     {
       $schema: vegaSchema,
+      title: 'Music File Systems',
+      description: 'Distribution of file systems used for music files',
       data: {
         values: values,
       },
@@ -175,6 +181,8 @@ const dataFsPie = (db: DatabaseSync): string => {
   return JSON.stringify(
     {
       $schema: vegaSchema,
+      title: 'Data File Systems',
+      description: 'Distribution of file systems used for data files',
       data: {
         values: values,
       },
@@ -225,6 +233,8 @@ const playerTypePie = (db: DatabaseSync): string => {
   return JSON.stringify(
     {
       $schema: vegaSchema,
+      title: 'Player Types',
+      description: 'Distribution of clients used',
       data: {
         values: values,
       },
