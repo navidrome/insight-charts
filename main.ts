@@ -20,7 +20,7 @@ flags['output-dir'] = flags['output-dir'].replace(/\/$/, '')
 
 const printUsage = () =>
   console.log(
-    `Usage: insights-visualizer [options]
+    `Usage: gen-charts [options]
     
 Options:
   -d, --db-path <path>      Path to the SQLite database (required)
@@ -28,7 +28,7 @@ Options:
   --help                    Display this help message
     
 Example:
-  insights-visualizer -d ./db/insights.db -o ./visualizations`,
+  gen-charts -d ./db/insights.db -o ./visualizations`,
   )
 
 if (flags.help) {
@@ -37,7 +37,7 @@ if (flags.help) {
 }
 
 if (flags['db-path'] === undefined) {
-  console.log('insight-visualizer: Database path must be specified')
+  console.log('gen-charts: Database path must be specified')
   exit(1)
 }
 
