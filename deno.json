@@ -1,7 +1,8 @@
 {
   "tasks": {
     "dev": "deno run -RW --watch main.ts",
-    "build": "deno lint && deno compile -o ./insight-charts -RW main.ts "
+    "build": "deno lint && deno compile -o ./insight-charts -RW main.ts ",
+    "serve": "deno run --allow-net --allow-read jsr:@std/http/file-server --port 8008"
   },
   "imports": {
     "sqlite": "npm:sqlite@^5.1.1"

@@ -16,7 +16,6 @@ Charts implemented so far:
 
 - [Deno](https://deno.land/) runtime
 - SQLite database with Navidrome insights data
-- Node (only if you want to use parcel to view charts in browser)
 
 ## Installation
 
@@ -54,12 +53,13 @@ Or use the compiled binary:
 
 ### View Visualizations
 
-The charts can be viewed in a web browser by using a zero-config bundler like
-[parcel](https://parceljs.org/):
+The charts can be viewed in a web browser by using Deno's built-in file server:
 
 ```bash
-npx parcel index.html
+deno task serve
 ```
+
+This will start a local server at `http://localhost:8008` where you can view the visualizations.
 
 ## Development
 

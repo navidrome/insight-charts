@@ -23,17 +23,27 @@
     <div id="vis5"></div>
 
     <script type="module">
-      import osPie from "./data/osPie.json";
-      import numIns from "./data/numInstance.json";
-      import musicFsPie from "./data/musicFsPie.json";
-      import dataFsPie from "./data/dataFsPie.json";
-      import playerTypePie from "./data/playerTypePie.json";
+      async function loadAndRenderCharts() {
+        try {
+          const [numIns, osPie, musicFsPie, dataFsPie, playerTypePie] = await Promise.all([
+            fetch("./data/numInstance.json").then(r => r.json()),
+            fetch("./data/osPie.json").then(r => r.json()),
+            fetch("./data/musicFsPie.json").then(r => r.json()),
+            fetch("./data/dataFsPie.json").then(r => r.json()),
+            fetch("./data/playerTypePie.json").then(r => r.json())
+          ]);
 
-      vegaEmbed("#vis1", numIns);
-      vegaEmbed("#vis2", osPie);
-      vegaEmbed("#vis3", musicFsPie);
-      vegaEmbed("#vis4", dataFsPie);
-      vegaEmbed("#vis5", playerTypePie);
+          vegaEmbed("#vis1", numIns);
+          vegaEmbed("#vis2", osPie);
+          vegaEmbed("#vis3", musicFsPie);
+          vegaEmbed("#vis4", dataFsPie);
+          vegaEmbed("#vis5", playerTypePie);
+        } catch (error) {
+          console.error("Error loading chart data:", error);
+        }
+      }
+
+      loadAndRenderCharts();
     </script>
   </body>
 </html>
