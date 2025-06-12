@@ -3,7 +3,7 @@ data
 .parcel-cache
 dist
 .DS_Store
-gen-charts
+insight-charts
 insights.db
 charts
 .idea

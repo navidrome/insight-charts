@@ -1,6 +1,8 @@
 ## Overview
 
-gen-charts processes insight records from [Navidrome](https://www.navidrome.org) and generates [Vega-Lite](https://vega.github.io/vega-lite/) charts.
+insight-charts processes insight records from
+[Navidrome](https://www.navidrome.org) and generates
+[Vega-Lite](https://vega.github.io/vega-lite/) charts.
 
 Charts implemented so far:
 
@@ -21,15 +23,16 @@ Charts implemented so far:
 Clone the repository and navigate to the project directory:
 
 ```bash
-git clone https://github.com/yourusername/gen-charts.git
-cd gen-charts
+git clone https://github.com/yourusername/insight-charts.git
+cd insight-charts
 ```
 
 ## Usage
 
 ### Command Line
 
-Run the chart generator by specifying the SQLite database path and optional output directory:
+Run the chart generator by specifying the SQLite database path and optional
+output directory:
 
 ```bash
 deno run -WR main.ts --db-path=./db/insights.db --output-dir=./data
@@ -38,19 +41,22 @@ deno run -WR main.ts --db-path=./db/insights.db --output-dir=./data
 Or use the compiled binary:
 
 ```bash
-./gen-charts -d ./db/insights.db -o ./data
+./insight-charts -d ./db/insights.db -o ./data
 ```
 
 #### Options
 
 - `-d, --db-path <path>`: Path to the SQLite database (required)
-- `-o, --output-dir <path>`: Output directory for visualization files (default: '.')
--  `-v, --verbose`: Add date and time to log messages
+- `-o, --output-dir <path>`: Output directory for visualization files (default:
+  '.')
+- `-v, --verbose`: Add date and time to log messages
 - `--help`: Display help message
 
 ### View Visualizations
 
-The charts can be viewed in a web browser by using a zero-config bundler like [parcel](https://parceljs.org/):
+The charts can be viewed in a web browser by using a zero-config bundler like
+[parcel](https://parceljs.org/):
+
 ```bash
 npx parcel index.html
 ```
@@ -74,12 +80,11 @@ deno task build
 ### Build the Docker image
 
 ```bash
-docker build -t gen-charts .
+docker build -t insight-charts .
 ```
 
 ### Run with Docker
 
 ```bash
-docker run -v ./db/insights.db:/app/insights.db -v ./charts:/app/charts gen-charts -d /app/insights.db -o /app/charts
+docker run -v ./db/insights.db:/app/insights.db -v ./charts:/app/charts insight-charts -d /app/insights.db -o /app/charts
 ```
-

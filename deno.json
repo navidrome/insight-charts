@@ -1,7 +1,7 @@
 {
   "tasks": {
     "dev": "deno run -RW --watch main.ts",
-    "build": "deno lint && deno compile -o ./gen-charts -RW main.ts "
+    "build": "deno lint && deno compile -o ./insight-charts -RW main.ts "
   },
   "imports": {
     "sqlite": "npm:sqlite@^5.1.1"
