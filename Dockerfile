@@ -1,4 +1,4 @@
-FROM denoland/deno:alpine AS build
+FROM denoland/deno AS build
 WORKDIR /workspace
 COPY . .
 RUN deno run build
