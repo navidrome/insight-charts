@@ -52,8 +52,8 @@ if (flags['db-path'] === undefined) {
 }
 
 flags['verbose']
-  ? logWithTimestamp('Opening SQLite databse at:', flags['db-path'])
-  : console.log('Opening SQLite databse at:', flags['db-path'])
+  ? logWithTimestamp('Opening SQLite database at:', flags['db-path'])
+  : console.log('Opening SQLite database at:', flags['db-path'])
 const db = new DatabaseSync(flags['db-path'])
 
 const summaryStmt = db.prepare('select data from summary order by time desc')
