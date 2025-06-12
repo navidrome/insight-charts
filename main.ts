@@ -1,4 +1,6 @@
 import { DatabaseSync } from 'node:sqlite'
+import { exit } from 'node:process'
+import { parseArgs } from 'jsr:@std/cli/parse-args'
 import {
   dataFsPie,
   musicFsPie,
@@ -6,8 +8,6 @@ import {
   osPie,
   playerTypePie,
 } from './generators.ts'
-import { parseArgs } from 'jsr:@std/cli/parse-args'
-import { exit } from 'node:process'
 
 const flags = parseArgs(Deno.args, {
   string: ['db-path', 'output-dir'],
@@ -50,32 +50,27 @@ const timeSeriesStmt = db.prepare(
 )
 
 Deno.mkdir(flags['output-dir'], { recursive: true }).catch(() => {})
-console.log(`Saving ${flags['output-dir']}/osPie.json`)
-await Deno.writeTextFile(
-  `${flags['output-dir']}/osPie.json`,
-  osPie(summaryStmt),
-)
+
+const charts = {
+  'osPie.json': osPie,
+  'musicFsPie.json': musicFsPie,
+  'dataFsPie.json': dataFsPie,
+  'playerTypePie.json': playerTypePie,
+}
+
+for (const [filename, generator] of Object.entries(charts)) {
+  console.log(`Saving ${flags['output-dir']}/${filename}`)
+  await Deno.writeTextFile(
+    `${flags['output-dir']}/${filename}`,
+    generator(summaryStmt),
+  )
+}
+
 console.log(`Saving ${flags['output-dir']}/numInstance.json`)
 await Deno.writeTextFile(
   `${flags['output-dir']}/numInstance.json`,
   numInstanceLine(timeSeriesStmt),
 )
-console.log(`Saving ${flags['output-dir']}/musicFsPie.json`)
-await Deno.writeTextFile(
-  `${flags['output-dir']}/musicFsPie.json`,
-  musicFsPie(summaryStmt),
-)
-console.log(`Saving ${flags['output-dir']}/dataFsPie.json`)
-await Deno.writeTextFile(
-  `${flags['output-dir']}/dataFsPie.json`,
-  dataFsPie(summaryStmt),
-)
-console.log(`Saving ${flags['output-dir']}/osPie.json`)
-await Deno.writeTextFile(
-  `${flags['output-dir']}/playerTypePie.json`,
-  playerTypePie(summaryStmt),
-)
-console.log(`Saving ${flags['output-dir']}/playerTypePie.json`)
-console.log('All charts saved, bye bye!')
 
+console.log('All charts saved, bye bye!')
 db.close()
