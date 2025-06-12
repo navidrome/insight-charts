@@ -45,6 +45,7 @@ Or use the compiled binary:
 
 - `-d, --db-path <path>`: Path to the SQLite database (required)
 - `-o, --output-dir <path>`: Output directory for visualization files (default: '.')
+-  `-v, --verbose`: Add date and time to log messages
 - `--help`: Display help message
 
 ### View Visualizations
