@@ -1,18 +1,20 @@
 import { Summary } from './model/index.ts'
-import { DatabaseSync } from 'node:sqlite'
+import { StatementSync } from 'node:sqlite'
 
 const vegaSchema = 'https://vega.github.io/schema/vega-lite/v5.json'
 
-const osPie = (db: DatabaseSync): string => {
-  const summary: Summary = JSON.parse(
+const parseSummaryData = (stmt: StatementSync) =>
+  JSON.parse(
     ((row) =>
       row && row['data'] instanceof Uint8Array
         ? new TextDecoder().decode(row['data'])
         : '')(
-        db.prepare('select data from summary order by time desc').get(),
+        stmt.get(),
       ),
   )
 
+const osPie = (stmt: StatementSync): string => {
+  const summary: Summary = parseSummaryData(stmt)
   const values = Object.entries(summary.os ?? {}).map(
     ([name, count]) => ({ os: name, c: count }),
   )
@@ -53,10 +55,7 @@ const osPie = (db: DatabaseSync): string => {
   })
 }
 
-const numInstanceLine = (db: DatabaseSync): string => {
-  const stmt = db.prepare(
-    "select time, data from summary where data not like '{}' and time > '2024-12-21'",
-  )
+const numInstanceLine = (stmt: StatementSync): string => {
   const values = [{}]
   for (const row of stmt.iterate()) {
     const dt = new Date(row.time as string).toISOString().slice(0, 10)
@@ -113,15 +112,8 @@ const numInstanceLine = (db: DatabaseSync): string => {
   })
 }
 
-const musicFsPie = (db: DatabaseSync): string => {
-  const summary: Summary = JSON.parse(
-    ((row) =>
-      row && row['data'] instanceof Uint8Array
-        ? new TextDecoder().decode(row['data'])
-        : '')(
-        db.prepare('select data from summary order by time desc').get(),
-      ),
-  )
+const musicFsPie = (stmt: StatementSync): string => {
+  const summary: Summary = parseSummaryData(stmt)
   const values = Object.entries(summary.musicFS ?? {}).map(
     ([type, count]) => ({ fs: type, c: count }),
   )
@@ -165,15 +157,8 @@ const musicFsPie = (db: DatabaseSync): string => {
   )
 }
 
-const dataFsPie = (db: DatabaseSync): string => {
-  const summary: Summary = JSON.parse(
-    ((row) =>
-      row && row['data'] instanceof Uint8Array
-        ? new TextDecoder().decode(row['data'])
-        : '')(
-        db.prepare('select data from summary order by time desc').get(),
-      ),
-  )
+const dataFsPie = (stmt: StatementSync): string => {
+  const summary: Summary = parseSummaryData(stmt)
   const values = Object.entries(summary.dataFS ?? {}).map(
     ([type, count]) => ({ fs: type, c: count }),
   )
@@ -217,15 +202,8 @@ const dataFsPie = (db: DatabaseSync): string => {
   )
 }
 
-const playerTypePie = (db: DatabaseSync): string => {
-  const summary: Summary = JSON.parse(
-    ((row) =>
-      row && row['data'] instanceof Uint8Array
-        ? new TextDecoder().decode(row['data'])
-        : '')(
-        db.prepare('select data from summary order by time desc').get(),
-      ),
-  )
+const playerTypePie = (stmt: StatementSync): string => {
+  const summary: Summary = parseSummaryData(stmt)
   const values = Object.entries(summary.playerTypes ?? {}).map(
     ([name, count]) => ({ pt: `${name}: ${count}`, c: count }),
   )

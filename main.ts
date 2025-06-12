@@ -41,29 +41,41 @@ if (flags['db-path'] === undefined) {
   exit(1)
 }
 
+console.log('Opening SQLite databse at:', flags['db-path'])
 const db = new DatabaseSync(flags['db-path'])
 
-Deno.mkdir(flags['output-dir'], { recursive: true }).catch(() => {})
+const summaryStmt = db.prepare('select data from summary order by time desc')
+const timeSeriesStmt = db.prepare(
+  "select time, data from summary where data not like '{}' and time > '2024-12-21'",
+)
 
+Deno.mkdir(flags['output-dir'], { recursive: true }).catch(() => {})
+console.log(`Saving ${flags['output-dir']}/osPie.json`)
 await Deno.writeTextFile(
   `${flags['output-dir']}/osPie.json`,
-  osPie(db),
+  osPie(summaryStmt),
 )
+console.log(`Saving ${flags['output-dir']}/numInstance.json`)
 await Deno.writeTextFile(
   `${flags['output-dir']}/numInstance.json`,
-  numInstanceLine(db),
+  numInstanceLine(timeSeriesStmt),
 )
+console.log(`Saving ${flags['output-dir']}/musicFsPie.json`)
 await Deno.writeTextFile(
   `${flags['output-dir']}/musicFsPie.json`,
-  musicFsPie(db),
+  musicFsPie(summaryStmt),
 )
+console.log(`Saving ${flags['output-dir']}/dataFsPie.json`)
 await Deno.writeTextFile(
   `${flags['output-dir']}/dataFsPie.json`,
-  dataFsPie(db),
+  dataFsPie(summaryStmt),
 )
+console.log(`Saving ${flags['output-dir']}/osPie.json`)
 await Deno.writeTextFile(
   `${flags['output-dir']}/playerTypePie.json`,
-  playerTypePie(db),
+  playerTypePie(summaryStmt),
 )
+console.log(`Saving ${flags['output-dir']}/playerTypePie.json`)
+console.log('All charts saved, bye bye!')
 
 db.close()
