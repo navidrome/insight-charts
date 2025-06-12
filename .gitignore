@@ -2,6 +2,7 @@ db
 data
 .parcel-cache
 dist
-.vscode
 .DS_Store
 gen-charts
+insights.db
+charts
