@@ -7,3 +7,4 @@ insight-charts
 insights.db
 charts
 .idea
+docker-compose.yml
