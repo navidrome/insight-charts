@@ -4,6 +4,6 @@ data
 dist
 .DS_Store
 insight-charts
-insights.db
+insights.db*
 charts
 .idea
