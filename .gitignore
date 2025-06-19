@@ -1,9 +1,7 @@
-db
-data
-.parcel-cache
-dist
 .DS_Store
+.idea
+.env
+db
 insight-charts
 insights.db*
 charts
-.idea

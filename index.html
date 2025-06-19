@@ -25,13 +25,14 @@
     <script type="module">
       async function loadAndRenderCharts() {
         try {
-          const [numIns, osPie, musicFsPie, dataFsPie, playerTypePie] = await Promise.all([
-            fetch("./data/numInstance.json").then(r => r.json()),
-            fetch("./data/osPie.json").then(r => r.json()),
-            fetch("./data/musicFsPie.json").then(r => r.json()),
-            fetch("./data/dataFsPie.json").then(r => r.json()),
-            fetch("./data/playerTypePie.json").then(r => r.json())
-          ]);
+          const [numIns, osPie, musicFsPie, dataFsPie, playerTypePie] =
+            await Promise.all([
+              fetch("./charts/numInstance.json").then((r) => r.json()),
+              fetch("./charts/osPie.json").then((r) => r.json()),
+              fetch("./charts/musicFsPie.json").then((r) => r.json()),
+              fetch("./charts/dataFsPie.json").then((r) => r.json()),
+              fetch("./charts/playerTypePie.json").then((r) => r.json()),
+            ]);
 
           vegaEmbed("#vis1", numIns);
           vegaEmbed("#vis2", osPie);
