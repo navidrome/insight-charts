@@ -1,9 +1,9 @@
-FROM denoland/deno AS build
+FROM denoland/deno:alpine AS build
 WORKDIR /workspace
 COPY . .
-RUN deno run build
+RUN deno task build
 
-FROM debian:stable-slim AS final
+FROM gcr.io/distroless/cc-debian12 AS final
 WORKDIR /app
 COPY --from=build /workspace/insight-charts /insight-charts
 ENTRYPOINT [ "/insight-charts" ]
