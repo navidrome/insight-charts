@@ -63,24 +63,19 @@ const timeSeriesStmt = db.prepare(
 
 Deno.mkdir(flags['output-dir'], { recursive: true }).catch(() => {})
 
-const charts = {
-  'osPie.json': osPie,
-  'musicFsPie.json': musicFsPie,
-  'dataFsPie.json': dataFsPie,
-  'playerTypePie.json': playerTypePie,
-}
+const charts = [
+  { filename: 'osPie.json', generator: osPie, stmt: summaryStmt },
+  { filename: 'musicFsPie.json', generator: musicFsPie, stmt: summaryStmt },
+  { filename: 'dataFsPie.json', generator: dataFsPie, stmt: summaryStmt },
+  { filename: 'playerTypePie.json', generator: playerTypePie, stmt: summaryStmt },
+  { filename: 'numInstance.json', generator: numInstanceLine, stmt: timeSeriesStmt },
+]
 
-for (const [filename, generator] of Object.entries(charts)) {
+for (const { filename, generator, stmt } of charts) {
   const path = `${flags['output-dir']}/${filename}`
   log(`Saving ${path}`)
-  await Deno.writeTextFile(path, generator(summaryStmt))
+  await Deno.writeTextFile(path, generator(stmt))
 }
-
-log(`Saving ${flags['output-dir']}/numInstance.json`)
-await Deno.writeTextFile(
-  `${flags['output-dir']}/numInstance.json`,
-  numInstanceLine(timeSeriesStmt),
-)
 
 log('All charts saved, bye bye!')
 db.close()
