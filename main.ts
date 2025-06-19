@@ -9,21 +9,23 @@ import {
   playerTypePie,
 } from './generators.ts'
 
-const logWithTimestamp = (...args: unknown[]) => {
-  const now = new Date()
-  const timestamp = now.toISOString()
-    .replace(/T/, ' ')
-    .replace(/\..+/, '')
-    .replace(/-/g, '/')
-  console.log(`${timestamp}`, ...args)
-}
-
 const flags = parseArgs(Deno.args, {
   string: ['db-path', 'output-dir'],
   boolean: ['help', 'verbose'],
   default: { 'output-dir': '.' },
   alias: { d: 'db-path', o: 'output-dir', v: 'verbose' },
 })
+
+const log = flags['verbose']
+  ? (...args: unknown[]) => {
+    const now = new Date()
+    const timestamp = now.toISOString()
+      .replace(/T/, ' ')
+      .replace(/\..+/, '')
+      .replace(/-/g, '/')
+    console.log(`${timestamp}`, ...args)
+  }
+  : console.log
 
 flags['output-dir'] = flags['output-dir'].replace(/\/$/, '')
 
@@ -51,9 +53,7 @@ if (flags['db-path'] === undefined) {
   exit(1)
 }
 
-flags['verbose']
-  ? logWithTimestamp('Opening SQLite database at:', flags['db-path'])
-  : console.log('Opening SQLite database at:', flags['db-path'])
+log('Opening SQLite database at:', flags['db-path'])
 const db = new DatabaseSync(flags['db-path'])
 
 const summaryStmt = db.prepare('select data from summary order by time desc')
@@ -71,24 +71,16 @@ const charts = {
 }
 
 for (const [filename, generator] of Object.entries(charts)) {
-  flags['verbose']
-    ? logWithTimestamp(`Saving ${flags['output-dir']}/${filename}`)
-    : console.log(`Saving ${flags['output-dir']}/${filename}`)
-  await Deno.writeTextFile(
-    `${flags['output-dir']}/${filename}`,
-    generator(summaryStmt),
-  )
+  const path = `${flags['output-dir']}/${filename}`
+  log(`Saving ${path}`)
+  await Deno.writeTextFile(path, generator(summaryStmt))
 }
 
-flags['verbose']
-  ? logWithTimestamp(`Saving ${flags['output-dir']}/numInstance.json`)
-  : console.log(`Saving ${flags['output-dir']}/numInstance.json`)
+log(`Saving ${flags['output-dir']}/numInstance.json`)
 await Deno.writeTextFile(
   `${flags['output-dir']}/numInstance.json`,
   numInstanceLine(timeSeriesStmt),
 )
 
-flags['verbose']
-  ? logWithTimestamp('All charts saved, bye bye!')
-  : console.log('All charts saved, bye bye!')
+log('All charts saved, bye bye!')
 db.close()
