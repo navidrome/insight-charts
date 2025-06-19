@@ -12,7 +12,12 @@ import {
 const flags = parseArgs(Deno.args, {
   string: ['db-path', 'output-dir'],
   boolean: ['help', 'verbose'],
-  default: { 'output-dir': '.' },
+  default: {
+    'db-path': Deno.env.get('INSIGHT_DB_PATH'),
+    'output-dir': Deno.env.get('INSIGHT_OUTPUT_DIR') ?? '.',
+    'verbose': ["1", "true", "yes"].includes(
+        (Deno.env.get("INSIGHT_VERBOSE") ?? "").toLowerCase()),
+    },
   alias: { d: 'db-path', o: 'output-dir', v: 'verbose' },
 })
 
@@ -38,6 +43,11 @@ Options:
   -o, --output-dir <path>   Output directory for visualization files (default: '.')
   -v, --verbose             Add date and time to log messages
   --help                    Display this help message
+  
+Environment variables (override the matching options):
+  INSIGHT_DB_PATH           Same as --db-path
+  INSIGHT_OUTPUT_DIR        Same as --output-dir
+  INSIGHT_VERBOSE           Same as --verbose
     
 Example:
   insight-charts -d ./db/insights.db -o ./visualizations`,

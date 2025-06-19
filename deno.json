@@ -1,7 +1,7 @@
 {
   "tasks": {
-    "dev": "deno run -RW --watch main.ts",
-    "build": "deno lint && deno compile -o ./insight-charts -RW main.ts ",
+    "dev": "deno run --env-file=.env --allow-read --allow-write --allow-env=INSIGHT_DB_PATH,INSIGHT_OUTPUT_DIR,INSIGHT_VERBOSE --watch main.ts",
+    "build": "deno lint && deno compile -o ./insight-charts --allow-read --allow-write --allow-env=INSIGHT_DB_PATH,INSIGHT_OUTPUT_DIR,INSIGHT_VERBOSE main.ts ",
     "serve": "deno run --allow-net --allow-read jsr:@std/http/file-server --port 8008"
   },
   "imports": {
@@ -9,6 +9,7 @@
   },
   "fmt": {
     "semiColons": false,
-    "singleQuote": true
+    "singleQuote": true,
+    "lineWidth": 85
   }
 }
