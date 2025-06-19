@@ -58,7 +58,7 @@ const db = new DatabaseSync(flags['db-path'])
 
 const summaryStmt = db.prepare('select data from summary order by time desc')
 const timeSeriesStmt = db.prepare(
-  "select time, data from summary where data not like '{}' and time > '2024-12-21'",
+  "select time, data from summary where data not like '{}' and time > '2024-12-21' and time < (select max(time) from summary)",
 )
 
 Deno.mkdir(flags['output-dir'], { recursive: true }).catch(() => {})
