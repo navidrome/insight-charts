@@ -1,52 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>Navidrome insights</title>
-    <meta charset="utf-8" />
-
-    <script src="https://cdn.jsdelivr.net/npm/vega@5.30.0"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.21.0"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.26.0"></script>
-
-    <style media="screen">
-      .vega-actions a {
-        margin-right: 5px;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>Navidrome insights</h1>
-    <div style="text-align: center; width: 100%">
-      <div id="vis1" style="margin: 20px auto; width: 100%"></div>
-      <div id="vis2" style="margin: 20px auto; width: 100%"></div>
-      <div id="vis3" style="margin: 20px auto; width: 100%"></div>
-      <div id="vis4" style="margin: 20px auto; width: 100%"></div>
-      <div id="vis5" style="margin: 20px auto; width: 100%"></div>
-    </div>
-
-    <script type="module">
-      async function loadAndRenderCharts() {
-        try {
-          const [numIns, osPie, musicFsPie, dataFsPie, playerTypePie] =
-            await Promise.all([
-              fetch("./charts/numInstance.json").then((r) => r.json()),
-              fetch("./charts/osPie.json").then((r) => r.json()),
-              fetch("./charts/musicFsPie.json").then((r) => r.json()),
-              fetch("./charts/dataFsPie.json").then((r) => r.json()),
-              fetch("./charts/playerTypePie.json").then((r) => r.json()),
-            ]);
-
-          vegaEmbed("#vis1", numIns);
-          vegaEmbed("#vis2", osPie);
-          vegaEmbed("#vis3", musicFsPie);
-          vegaEmbed("#vis4", dataFsPie);
-          vegaEmbed("#vis5", playerTypePie);
-        } catch (error) {
-          console.error("Error loading chart data:", error);
-        }
-      }
-
-      loadAndRenderCharts();
-    </script>
-  </body>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.6.0/dist/echarts.min.js"></script>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="main" style="width: 2000px;height:600px;"></div>
+<script type="text/javascript">
+    // Initialize the echarts instance based on the prepared dom
+    var myChart = echarts.init(document.getElementById('main'));
+    // fetch('./charts/pie.json')
+    //     .then(response => response.json())
+    //     .then(option => {
+    //         // Set the chart options using the data from bar.json
+    //         myChart.setOption(option);
+    //     })
+    //     .catch(error => console.error('Error loading bar.json:', error));
+    fetch('./charts/line.json')
+        .then(response => response.json())
+        .then(option => {
+            // Set the chart options using the data from bar.json
+            myChart.setOption(option);
+        })
+        .catch(error => console.error('Error loading line.json:', error));
+</script>
+</body>
 </html>
